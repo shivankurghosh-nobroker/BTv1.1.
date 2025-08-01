@@ -26,16 +26,57 @@
   const stopBtn = document.getElementById("stopBtn");
   const rewindBtn = document.getElementById("rewindBtn");
   const forwardBtn = document.getElementById("forwardBtn");
-  const audio = document.getElementById("backgroundMusic");
+  (() => {
+    const audio = document.getElementById('backgroundMusic');
+    let currentSlide = 0;
+    let isPlaying = false;
+    let slideTimeout = null;
+    let progressInterval = null;
+    let startTime = null;
+    let pausedTime = 0;
 
-  let currentSlide = 0;
-  let isPlaying = false;
-  let playbackSpeed = 1;
-  let slideTimeout = null;
-  let progressInterval = null;
-  let startTime = null;
-  let pausedTime = 0;
-  const totalDuration = slidesData.reduce((a, s) => a + s.duration, 0);
+    // Your existing variables, slide data, DOM refs...
+
+  function play() {
+    if (currentSlide >= slidesData.length) {
+      restart();
+      return;
+    }
+    isPlaying = true;
+    startTime = Date.now() - pausedTime;
+    togglePlayPauseButtons(true);
+    scheduleNextSlide();
+    startProgressUpdater();
+    if (audio) audio.play().catch(() => {});
+  }
+
+  function pause() {
+    isPlaying = false;
+    pausedTime = Date.now() - startTime;
+    togglePlayPauseButtons(false);
+    clearSlideTimeout();
+    clearProgressInterval();
+    if (audio) audio.pause();
+  }
+
+  function stop() {
+    pause();
+    currentSlide = 0;
+    pausedTime = 0;
+    startTime = null;
+    showSlide(currentSlide);
+    updateProgress(0);
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  }
+
+  // rest of your existing logic...
+
+  // Also, control elements event listeners as before
+
+})();
 
   function renderSlides() {
     slidesData.forEach((slide, i) => {
