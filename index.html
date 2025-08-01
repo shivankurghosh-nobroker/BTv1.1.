@@ -35,18 +35,29 @@
 
   <script src="app.js"></script>
   <script>
-    // Fetch the logo URL from config.json and set it on the img element
+    // Fetch config.json and set logo URL and background music URL
     fetch('config.json')
       .then(response => response.json())
       .then(config => {
+        // Set logo image source
         const logoImg = document.getElementById('logo-img');
         if (logoImg && config.logoUrl) {
           logoImg.src = config.logoUrl;
         }
-        // Also set background music src here if you want to manage it from config in the future
-      })
-      .catch(err => {
-        console.error('Failed to load config.json:', err);
+      
+      // Set background music source
+      const audioElement = document.getElementById('backgroundMusic');
+      if (audioElement && config.backgroundMusicUrl) {
+        audioElement.src = config.backgroundMusicUrl;
+      }
+      
+      // You can also use the phone number from config if needed
+      // This is already handled in app.js, but you could update it here too
+    })
+    .catch(err => {
+      console.error('Failed to load config.json:', err);
+      // Fallback: you could set default values here if config fails to load
+    });
       });
   </script>
 </body>
